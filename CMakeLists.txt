@@ -13,11 +13,15 @@ endif()
 
 project("sdb" C)
 
+option(BUILD_MEMCACHE "Build memcache" OFF)
+
 include(GNUInstallDirs) # Defines CMAKE_INSTALL_*DIR, requires CMake 2.8.5
 
 set(SDBVER "1.0.0")
 
 add_subdirectory(src)
 #add_subdirectory(bindings)
-#add_subdirectory(memcache)
+if(BUILD_MEMCACHE)
+	add_subdirectory(memcache)
+endif()
 #add_subdirectory(test)
