@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 
 # Because sdb ships with Makefiles and so on, just let's disallow in-source
 # builds.
@@ -11,6 +11,8 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
 	message(FATAL_ERROR "In-source builds aren't allowed!") # Yet.
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 project("sdb" C)
 
 option(BUILD_MEMCACHE "Build memcache" OFF)
@@ -22,10 +24,10 @@ enable_testing()
 set(SDBVER "1.0.0")
 
 add_subdirectory(src)
-#add_subdirectory(bindings)
 if(BUILD_MEMCACHE)
 	add_subdirectory(memcache)
 endif()
 if(BUILD_TESTS)
 	add_subdirectory(test)
 endif()
+add_subdirectory(bindings)

@@ -1,0 +1,6 @@
+add_subdirectory(python)
+add_subdirectory(nodejs)
+add_subdirectory(go)
+add_subdirectory(csharp)
+add_subdirectory(d)
+add_subdirectory(vala)
