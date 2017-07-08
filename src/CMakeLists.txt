@@ -1,6 +1,4 @@
-add_custom_command(OUTPUT "sdb_version.h"
-	COMMAND ${CMAKE_COMMAND} -E echo "#define SDB_VERSION \"${SDBVER}\"" >
-	"sdb_version.h" VERBATIM)
+configure_file("sdb_version.h.in" "sdb_version.h" @ONLY)
 
 # TODO: Maybe just add js0n as a dependency?
 set(JS0N_DEST "${CMAKE_CURRENT_BINARY_DIR}/json/js0n.c")
@@ -38,26 +36,42 @@ set(sdb_SRCS
 	fmt.c
 	journal.c
 	types.h
+	sdb_version.h
 	)
-list(APPEND sdb_SRCS sdb_version.h)
+set(sdb_HEADERS
+	sdb.h
+	cdb.h
+	ht.h
+	types.h
+	ls.h
+	cdb_make.h
+	buffer.h
+	config.h
+	sdb_version.h
+	)
 include_directories("${CMAKE_CURRENT_BINARY_DIR}") # To find sdb_version.h
 
 add_library(sdb_static STATIC ${sdb_SRCS})
 set_target_properties(sdb_static PROPERTIES OUTPUT_NAME sdb)
 
+add_library(sdb_shared SHARED ${sdb_SRCS})
+set_target_properties(sdb_shared PROPERTIES OUTPUT_NAME sdb)
+
+foreach(TARGET sdb_static sdb_shared)
+	target_include_directories(${TARGET} PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> # Only when building
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> # Only when building
+		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sdb>) # Only when exporting
+	target_sources(${TARGET} PRIVATE ${sdb_HEADERS})
+endforeach()
+
 add_executable(sdb_exe main.c)
 set_target_properties(sdb_exe PROPERTIES OUTPUT_NAME sdb)
 target_link_libraries(sdb_exe sdb_static)
-
-add_library(sdb_shared SHARED ${sdb_SRCS})
-set_target_properties(sdb_shared PROPERTIES OUTPUT_NAME sdb)
 
 install(TARGETS sdb_exe sdb_shared sdb_static
 	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
 	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 	ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-install(FILES src/sdb.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
-file(GLOB sdb_HEADERS src/*.h)
-list(REMOVE_ITEM sdb_HEADERS src/sdbht.h)
+install(FILES "sdb.1" DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
 install(FILES ${sdb_HEADERS} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/sdb")
-
