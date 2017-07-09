@@ -39,17 +39,18 @@ install(TARGETS sdbtypes
 install(FILES "sdbtypes.h" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 install(FILES "sdbtypes.vapi" DESTINATION "${CMAKE_INSTALL_DATADIR}/vala/vapi")
 
-if(BUILD_TESTS)
-	vala_precompile_target(
-		test-sdbtypes-vala
-		test_sdbtypes_vala_C_SRCS
-		main.vala
-		PACKAGES sdbtypes
-		FLAGS "--vapidir=${CMAKE_CURRENT_BINARY_DIR}"
-		)
-	add_executable(test-sdbtypes ${test_sdbtypes_vala_C_SRCS})
-	target_link_libraries(test-sdbtypes sdbtypes gobject-2.0)
-	add_dependencies(test-sdbtypes test-sdbtypes-vala)
-	add_test(NAME "sdbtypes" COMMAND "$<TARGET_FILE:test-sdbtypes>")
-endif()
+# Tests
+vala_precompile_target(
+	test-sdbtypes-vala
+	test_sdbtypes_vala_C_SRCS
+	main.vala
+	PACKAGES sdbtypes
+	DEPENDS sdbtypes
+	FLAGS "--vapidir=${CMAKE_CURRENT_BINARY_DIR}"
+	)
+add_executable(test-sdbtypes EXCLUDE_FROM_ALL ${test_sdbtypes_vala_C_SRCS})
+target_link_libraries(test-sdbtypes sdbtypes gobject-2.0)
+add_dependencies(test-sdbtypes test-sdbtypes-vala)
+add_test(NAME "sdbtypes" COMMAND "$<TARGET_FILE:test-sdbtypes>")
+add_dependencies(build-test test-sdbtypes)
 

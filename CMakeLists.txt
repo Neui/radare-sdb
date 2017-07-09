@@ -16,10 +16,16 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 project("sdb" C)
 
 option(BUILD_MEMCACHE "Build memcache" OFF)
-option(BUILD_TESTS "Build tests" ON)
 
 include(GNUInstallDirs) # Defines CMAKE_INSTALL_*DIR, requires CMake 2.8.5
 enable_testing()
+add_custom_target(build-test)
+# Because the target "test" directly invokes ctest, we need to specifiy
+# something that the tests are built when we want to test. Luckly, there is
+# the TEST_INCLUDE_FILE-property, that is run by CMake when we are testing.
+configure_file("BuildTests.cmake.in" "BuildTests.cmake")
+set_directory_properties(PROPERTIES TEST_INCLUDE_FILE
+	"${CMAKE_BINARY_DIR}/BuildTests.cmake")
 
 set(SDBVER "1.0.0")
 
@@ -27,7 +33,5 @@ add_subdirectory(src)
 if(BUILD_MEMCACHE)
 	add_subdirectory(memcache)
 endif()
-if(BUILD_TESTS)
-	add_subdirectory(test)
-endif()
+add_subdirectory(test)
 add_subdirectory(bindings)
