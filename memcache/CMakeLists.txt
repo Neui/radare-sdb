@@ -43,3 +43,11 @@ add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/cmds.h"
 	COMMAND $<TARGET_FILE:mcsdb_cmds> > "${CMAKE_CURRENT_BINARY_DIR}/cmds.h"
 	COMMENT "Generating commands for memcache"
 	VERBATIM) # VERBATIM required for IO redirection
+
+set(PREFIX "${CMAKE_INSTALL_PREFIX}")
+set(LIBDIR "${CMAKE_INSTALL_LIBDIR}")
+set(INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}")
+configure_file("mcsdb.d.in" "mcsdb.d" @ONLY)
+install(FILES "${CURRENT_BINARY_DIR}/mcsdb.d"
+	DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+

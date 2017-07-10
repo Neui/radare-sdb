@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/@LIBDIR@
+includedir=${prefix}/@INCLUDEDIR@/sdb
+
+Name: sdb
+Description: Simple DataBase
+Version: @SDBVER@
+Requires:
+Libs: -L${libdir} -lsdb
+Cflags: -I${includedir}

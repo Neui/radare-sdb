@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/@LIBDIR@
+includedir=${prefix}/@INCLUDEDIR@/sdb
+
+Name: mcsdb
+Description: Memcache on Simple DataBase
+Version: @SDBVER@
+Requires:
+Libs: -L${libdir} -lmcsdb
+Cflags: -I${includedir}
