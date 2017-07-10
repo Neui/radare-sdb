@@ -15,8 +15,10 @@ if(BINDING_VALA)
 	if(NOT GLIB_FOUND)
 		message(FATAL_ERROR "Couldn't find glib!")
 	endif()
-	
+	set(VAPIDIR "${CMAKE_INSTALL_DATADIR}/vala/vapi")
 	add_subdirectory(types)
+	
+	install(FILES "sdb.vapi" DESTINATION "${VAPIDIR}")
 	
 	# Tests
 	vala_precompile_target(

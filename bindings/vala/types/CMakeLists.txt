@@ -37,7 +37,7 @@ install(TARGETS sdbtypes
 	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 	ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 install(FILES "sdbtypes.h" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
-install(FILES "sdbtypes.vapi" DESTINATION "${CMAKE_INSTALL_DATADIR}/vala/vapi")
+install(FILES "sdbtypes.vapi" DESTINATION "${VAPIDIR}")
 
 # Tests
 vala_precompile_target(
